@@ -1,10 +1,8 @@
 package med.voll.api.controller;
 
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
-import med.voll.api.model.medico.DatosListadoMedico;
-import med.voll.api.model.medico.DatosRegistroMedico;
-import med.voll.api.model.medico.Medico;
-import med.voll.api.model.medico.MedicoRepository;
+import med.voll.api.model.medico.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -26,5 +24,12 @@ public class MedicoController {
     @PostMapping
     public Medico registrarMedico(@RequestBody @Valid DatosRegistroMedico datosRegistroMedico) {
         return medicoRepository.save(new Medico(datosRegistroMedico));
+    }
+
+    @PutMapping
+    @Transactional
+    public void actualizarMedico(@RequestBody @Valid DatosActualizarMedico datosActualizarMedico) {
+        Medico medico = medicoRepository.getReferenceById(datosActualizarMedico.id());
+        medico.actualizarDatos(datosActualizarMedico);
     }
 }
