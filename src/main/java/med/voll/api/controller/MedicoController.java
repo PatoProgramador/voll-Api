@@ -21,9 +21,16 @@ public class MedicoController {
     private MedicoRepository medicoRepository;
 
     @GetMapping
-    public Page<DatosListadoMedico> listadoMedicos(@PageableDefault(size = 2) Pageable pagination) {
+    public ResponseEntity<Page<DatosListadoMedico>> listadoMedicos(@PageableDefault(size = 2) Pageable pagination) {
 //        return medicoRepository.findAll(pagination).map(DatosListadoMedico::new);
-        return medicoRepository.findByActivoTrue(pagination).map(DatosListadoMedico::new);
+        return ResponseEntity.ok(medicoRepository.findByActivoTrue(pagination).map(DatosListadoMedico::new));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<DatosListadoMedico> retornarDatosMedico(@PathVariable Long id) {
+        Medico medico = medicoRepository.getReferenceById(id);
+        DatosListadoMedico datosListadoMedico = new DatosListadoMedico(medico);
+        return ResponseEntity.ok(datosListadoMedico);
     }
 
     @PostMapping
