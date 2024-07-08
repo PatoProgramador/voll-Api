@@ -9,6 +9,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
+
+import java.net.URI;
 
 @RestController
 @RequestMapping("/medicos")
@@ -24,13 +27,17 @@ public class MedicoController {
     }
 
     @PostMapping
-    public Medico registrarMedico(@RequestBody @Valid DatosRegistroMedico datosRegistroMedico) {
-        return medicoRepository.save(new Medico(datosRegistroMedico));
+    public ResponseEntity<DatosListadoMedico> registrarMedico(@RequestBody @Valid DatosRegistroMedico datosRegistroMedico, UriComponentsBuilder uriComponentsBuilder) {
+        Medico medico = medicoRepository.save(new Medico(datosRegistroMedico));
+        DatosListadoMedico datosListadoMedico = new DatosListadoMedico(medico);
+
+        URI url = uriComponentsBuilder.path("/medicos/{id}").buildAndExpand(medico.getId()).toUri();
+        return ResponseEntity.created(url).body(datosListadoMedico);
     }
 
     @PutMapping
     @Transactional
-    public ResponseEntity actualizarMedico(@RequestBody @Valid DatosActualizarMedico datosActualizarMedico) {
+    public ResponseEntity<DatosListadoMedico> actualizarMedico(@RequestBody @Valid DatosActualizarMedico datosActualizarMedico) {
         Medico medico = medicoRepository.getReferenceById(datosActualizarMedico.id());
         medico.actualizarDatos(datosActualizarMedico);
         return ResponseEntity.ok(new DatosListadoMedico(medico));
@@ -45,7 +52,7 @@ public class MedicoController {
     // DELETE LOGICO
     @DeleteMapping("/{id}")
     @Transactional
-    public ResponseEntity eliminarMedico(@PathVariable Long id) {
+    public ResponseEntity<Void> eliminarMedico(@PathVariable Long id) {
         Medico medico = medicoRepository.getReferenceById(id);
         medico.desactivarMedico();
         return ResponseEntity.noContent().build();
