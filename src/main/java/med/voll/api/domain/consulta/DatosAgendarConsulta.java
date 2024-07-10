@@ -10,7 +10,6 @@ public record DatosAgendarConsulta(
         Long id,
         @NotNull
         Long idPaciente,
-        @NotNull
         Long idMedico,
         @NotNull
         @Future

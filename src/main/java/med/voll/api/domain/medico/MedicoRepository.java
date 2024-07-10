@@ -11,7 +11,7 @@ public interface MedicoRepository extends JpaRepository<Medico, Long> {
     Page<Medico> findByActivoTrue(Pageable pagination);
     @Query("""
        select m from Medico m
-       where m.activo= 1
+       where m.activo= false 
        and
        m.especialidad=:especialidad
        and
@@ -24,4 +24,11 @@ public interface MedicoRepository extends JpaRepository<Medico, Long> {
        limit 1
        """)
     Medico seleccionarMedicoConEspecialidadEnFecha(Especialidad especialidad, LocalDateTime fecha);
+
+    @Query("""
+            SELECT m.activo
+            FROM Medico m
+            WHERE m.id=:idMedico
+            """)
+    Boolean findByActivoById(Long idMedico);
 }
