@@ -15,10 +15,8 @@ import org.springframework.test.context.ActiveProfiles;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.temporal.TemporalAdjuster;
 import java.time.temporal.TemporalAdjusters;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @DataJpaTest
@@ -35,17 +33,16 @@ class MedicoRepositoryTest {
     @Test
     @DisplayName("Deberia retornar nulo cuando el medico se encuentre en consulta con otro paciente en ese horario")
     void seleccionarMedicoConEspecialidadEnFechaEscenario1() {
-        // dia de prueba
+        // given
         LocalDateTime proximoLunes10AM = LocalDate.now()
                 .with(TemporalAdjusters.next(DayOfWeek.MONDAY))
                 .atTime(10,0);
-        // datos de prueba
         Medico medico = registrarMedico("Jose", "jose@gmail.com", "123456", Especialidad.CARDIOLOGIA);
         Paciente paciente = registrarPaciente("Antonio", "anton@gmail.com", "1234587");
         registrarConsulta(medico, paciente, proximoLunes10AM);
-        // test
+        // when
         Medico medicoLibre = medicoRepository.seleccionarMedicoConEspecialidadEnFecha(Especialidad.CARDIOLOGIA, proximoLunes10AM);
-
+        // then
         assertThat(medicoLibre).isNull();
     }
 
