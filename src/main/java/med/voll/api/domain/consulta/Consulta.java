@@ -30,5 +30,11 @@ public class Consulta {
     private Paciente paciente;
 
     private LocalDateTime fecha;
+
+    public Consulta( Medico medico, Paciente paciente, LocalDateTime fecha) {
+        this.medico=medico;
+        this.paciente=paciente;
+        this.fecha=fecha;
+    }
 }
 
